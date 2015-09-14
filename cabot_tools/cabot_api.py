@@ -5,10 +5,11 @@ import requests
 
 
 class Cabot(object):
-    def __init__(self, base_url, username, password):
+    def __init__(self, base_url, username):
         self.base_url = base_url
-        self.auth = (username, password)
+        self.username = username
         self.session = requests.Session()
+        self.csrf_token = None
 
     def _make_request(self, method, path, data=None, **kwargs):
         url = urllib.parse.urljoin(self.base_url, path)
@@ -16,16 +17,22 @@ class Cabot(object):
         if data:
             data = json.dumps(data)
 
+        headers = {
+            "Content-Type": "application/json",
+            "Underpants-Email": self.username,
+        }
+
+        if self.csrf_token:
+            headers["X-CSRFToken"] = self.csrf_token
+
         resp = self.session.request(
             method, url,
-            auth=self.auth,
-            headers={
-                "Content-Type": "application/json",
-            },
+            headers=headers,
             data=data,
             **kwargs
         )
         resp.raise_for_status()
+        self.csrf_token = resp.cookies.get("csrftoken")
         return json.loads(resp.text)
 
     @property

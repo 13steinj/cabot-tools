@@ -80,7 +80,6 @@ def main():
         cabot = cabot_api.Cabot(
             cabot_url,
             configuration["cabot"]["username"],
-            configuration["cabot"]["password"],
         )
 
         print("Looking up service...")
