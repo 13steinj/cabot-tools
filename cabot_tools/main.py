@@ -143,8 +143,9 @@ def main():
         service.patch(["instances"])
 
         print()
+        cabot_vanity_url = configuration["cabot"]["vanity-url"]
         print("Checks created. See: {}/instance/{:d}/".format(
-            cabot_url, instance.id))
+            cabot_vanity_url, instance.id))
     except Exception as e:
         progname = os.path.basename(sys.argv[0])
         print("{}: ERROR: {}".format(progname, e), file=sys.stderr)
